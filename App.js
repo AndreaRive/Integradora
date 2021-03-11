@@ -1,21 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+
+import Login from './src/screens/Login';
+import Inicio from './src/screens/Inicio';
+import Registro from './src/screens/Registro';
+import { NavigationContainer } from '@react-navigation/native';
+
+//2.-
+import { createStackNavigator } from '@react-navigation/stack';
+import Home from './src/screens/private/Home';
+import { LogBox } from 'react-native';
+
+//2.1.-
+const Stack = createStackNavigator();
 
 export default function App() {
+  useEffect(() => {
+    LogBox.ignoreLogs([
+      'Animated: `useNativeDriver`',
+      'Setting a timer for a long period of time',
+    ]);
+  }, []);
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Inicio' headerMode='float'>
+        <Stack.Screen name='Login' component={Login} />
+
+        <Stack.Screen name='Inicio' component={Inicio} />
+
+        <Stack.Screen name='Registro' component={Registro} />
+
+        <Stack.Screen name='Home' component={Home} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
