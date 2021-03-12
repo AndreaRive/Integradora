@@ -3,19 +3,18 @@ import { Alert, BackHandler, TouchableOpacity } from 'react-native';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerActions } from '@react-navigation/core';
+import { Button } from 'react-native-paper';
 
 import Inicio from './Inicio';
 import Perfil from './Perfil';
+import MiQr from './MiQr';
+import Empleado from './Empleado';
+import Plazas from './Plazas';
 import Sidebar from './../../components/Sidebar';
 import CerrarSesion from './CerrarSesion';
 
 import { Entypo, AntDesign } from '@expo/vector-icons';
 
-/*
-Para crear un Drawer necesitamos una constante 
-donde guardaremos las referencias a cada item del 
-contenido de Screens
-*/
 const Drawer = createDrawerNavigator();
 
 const Home = (props) => {
@@ -55,9 +54,8 @@ const Home = (props) => {
     Antes de visualizarse
     Al modificar el VDOM
     Antes de destruirse
-    En su ejecución
-
-    Efectos ===== Realizar algún cambio en la UI en algún momento
+    En su ejecución*/
+  /*  Efectos ===== Realizar algún cambio en la UI en algún momento
     useEffect ======== El más común para modificar el contenido de la UI, 
     con componenentes nuevos
 
@@ -124,6 +122,12 @@ const Home = (props) => {
        * agrego un Screen
        */}
       <Drawer.Screen name='InicioUser' component={Inicio} />
+
+      <Drawer.Screen name='Plazas' component={Plazas} />
+
+      <Drawer.Screen name='MiQr' component={MiQr} />
+
+      <Drawer.Screen name='Empleado' component={Empleado} />
 
       <Drawer.Screen name='Perfil' component={Perfil} />
     </Drawer.Navigator>

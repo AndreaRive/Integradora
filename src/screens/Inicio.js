@@ -26,7 +26,7 @@ const Inicio = (props) => {
   const backAction = () => {
     Alert.alert(
       '¡Bienvenido!',
-      'Rowait',
+      '',
       [
         {
           text: 'Registrate',
@@ -39,7 +39,7 @@ const Inicio = (props) => {
           },
         },
         {
-          text: 'Logear',
+          text: 'Logea',
           onPress: () => {
             props.navigation.reset({
               index: 0,
@@ -114,12 +114,10 @@ const Inicio = (props) => {
                 <Card.Actions>
                   <Button>{item.item.nombre}</Button>
 
-                  <View style={{ float: 'right' }}>
-                    <Button>
-                      Población:{item.item.poblacionActual}/
-                      {item.item.poblacionGeneral}
-                    </Button>
-                  </View>
+                  <Button style={{ position: 'absolute', right: 0 }}>
+                    Población:{item.item.poblacionActual}/
+                    {item.item.poblacionGeneral}
+                  </Button>
                 </Card.Actions>
               </Card>
             </TouchableOpacity>

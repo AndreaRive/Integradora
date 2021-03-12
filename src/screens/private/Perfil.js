@@ -29,9 +29,7 @@ const Perfil = (props) => {
         name='MisDatos'
         component={MisDatos}
         options={{
-          tabBarIcon: () => (
-            <FontAwesome5 name='user-edit' size={30} color='#fff' />
-          ),
+          tabBarIcon: () => <FontAwesome5 name='edit' size={30} color='#fff' />,
         }}
       />
 

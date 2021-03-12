@@ -84,10 +84,26 @@ const Sidebar = (props) => {
         />
 
         <DrawerItem
+          icon={() => <AntDesign name='qrcode' size={20} color='#000' />}
+          label='Mi QR'
+          onPress={() => {
+            props.navigation.navigate('MiQr');
+          }}
+        />
+
+        <DrawerItem
           icon={() => <AntDesign name='user' size={20} color='#000' />}
           label='Perfíl'
           onPress={() => {
             props.navigation.navigate('Perfil');
+          }}
+        />
+
+        <DrawerItem
+          icon={() => <AntDesign name='user' size={20} color='#000' />}
+          label='Empleado'
+          onPress={() => {
+            props.navigation.navigate('Empleado');
           }}
         />
       </DrawerContentScrollView>

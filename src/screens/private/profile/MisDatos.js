@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
   ImageBackground,
   SafeAreaView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   ScrollView,
   Platform,
 } from 'react-native';
+import { TextInput, Button } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
 import firebase from './../../../database/firebase';
 import estilos from './../../../styles/estilos';
@@ -26,14 +25,41 @@ const MisDatos = (props) => {
   const [snackError, setSnackError] = useState(false);
   const [modalImg, setModalImg] = useState(false);
 
-  /**
-   * Creamos un hook que nos permita conectar al cargarse el screen
-   * con los datos de dicho usuario desde la colección usuaio
-   *
-   * No se debe convertir un efectoen una fn asincrona, si es necesario
-   * usar un hook y una promesa, se debe crear una función dentro del hook
-   * o bien crear una funcion flecha e invocarla en el hook
-   */
+  const [image, setImage] = React.useState(null);
+  const [status, setStatus] = React.useState(null);
+  const [permissions, setPermissions] = React.useState(false);
+
+  const askPermissionsAsync = async () => {
+    let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    } else {
+      setPermissions(true);
+    }
+  };
+
+  const takePictureAsync = async () => {
+    const { cancelled, uri, base64 } = await ImagePicker.launchCameraAsync({
+      base64: true,
+    });
+
+    if (!cancelled) {
+      setImage(uri);
+      setStatus('Loading...');
+      try {
+        const result = await callGoogleVisionAsync(base64);
+        setStatus(result);
+      } catch (error) {
+        setStatus(`Error: ${error.message}`);
+      }
+    } else {
+      setImage(null);
+      setStatus(null);
+    }
+  };
+
   useEffect(() => {
     /* tomamos los datos del usuario que ha iniciado sesión */
     setUsuarioFirebase(firebase.auth.currentUser);
@@ -50,12 +76,6 @@ const MisDatos = (props) => {
     try {
       const query = await firebase.db
         .collection('usuarios')
-        /**
-         * Where usa 3 parámetros
-         * 1.- Clave a comparar (campo en la tabla)
-         * 2.- Tipo de condición (leer documentación)
-         * 3.- Valor de la condición
-         */
         .where('authId', '==', uid)
         .get();
 
@@ -63,16 +83,6 @@ const MisDatos = (props) => {
        * Si la consulta no esta vacía
        */
       if (!query.empty) {
-        /**
-         * query contiene un snapshot llamado docs
-         * y es una arreglo con todos los documentos
-         * de la consulta
-         */
-        /* cuando esperamos varios registros en una consulta recorremos a doc */
-        // query.docs.forEach((doc) => {
-        // 	console.log(doc.data());
-        // });
-
         /* cuando esperamos solo un registro */
         const snapshot = query.docs[0];
 
@@ -88,25 +98,12 @@ const MisDatos = (props) => {
     }
   };
 
-  /**
-   * Creamos una constante para tomar una imagen desde
-   * la galería
-   * (Image Gallery - Android)
-   * (Camera Roll - iOS)
-   *
-   * 0.- Importar librería ImagePicker y todos sus componentes
-   * 1.- Pedir permiso para acceder a la mutimedia
-   * 2.- Indicar el tipo de multimedia que necesitamos (photo/video/all)
-   * 3.- Indicar si se podrá editar la imagen
-   * 4.- Indicar la relación de aspecto
-   */
   const getImagenGaleria = async () => {
     /**
      * Preguntamos por el permiso para acceder a
      * los elementos multimedia de la galería
      */
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
     /**
      * Si el usuario nos da permiso de ingresar a su galería
      * Mostramos todas sus fotos y esperamos que seleccione una
@@ -169,7 +166,15 @@ const MisDatos = (props) => {
                 <FontAwesome5 name='camera-retro' size={20} /> Actualizar foto
                 de perfíl
               </Text>
-              <Button title='Tomar foto' />
+              <View>
+                <View>
+                  {image && <Image source={{ uri: image }} />}
+                  {status && <Text>{status}</Text>}
+                  <Button mode='contained' onPress={takePictureAsync}>
+                    Tomar foto
+                  </Button>
+                </View>
+              </View>
 
               {Platform.OS === 'android' ? (
                 <View
@@ -179,7 +184,9 @@ const MisDatos = (props) => {
                 />
               ) : null}
 
-              <Button title='Galería' onPress={getImagenGaleria} />
+              <Button mode='contained' onPress={getImagenGaleria}>
+                Galería
+              </Button>
 
               {Platform.OS === 'android' ? (
                 <View
@@ -190,10 +197,12 @@ const MisDatos = (props) => {
               ) : null}
 
               <Button
-                title='Cancelar'
+                mode='contained'
                 color='red'
                 onPress={() => setModalImg(false)}
-              />
+              >
+                Cancelar
+              </Button>
             </View>
           }
         />
@@ -236,10 +245,19 @@ const MisDatos = (props) => {
           </ImageBackground>
         </TouchableOpacity>
 
-        <View style={{ margin: 10, flex: 1 }}>
+        <View style={{ marginBottom: 30, marginVertical: 20 }}>
+          <View>
+            <TextInput
+              style={estilos.input}
+              label='Correo electrónico'
+              keyboardType='email-address'
+              value={usuarioFirebase.email}
+              editable={false}
+            />
+          </View>
           <TextInput
             style={estilos.input}
-            placeholder='Nombre'
+            label='nombre'
             keyboardType='default'
             value={docUsuario.nombre}
             onChangeText={(val) =>
@@ -252,7 +270,7 @@ const MisDatos = (props) => {
 
           <TextInput
             style={estilos.input}
-            placeholder='Apellido 1'
+            label='Apellido 1'
             keyboardType='default'
             value={docUsuario.apellido1}
             onChangeText={(val) =>
@@ -265,7 +283,7 @@ const MisDatos = (props) => {
 
           <TextInput
             style={estilos.input}
-            placeholder='Apellido 2'
+            label='Apellido 2'
             keyboardType='default'
             value={docUsuario.apellido2}
             onChangeText={(val) =>
@@ -278,28 +296,23 @@ const MisDatos = (props) => {
 
           <TextInput
             style={estilos.input}
-            placeholder='Correo electrónico'
-            keyboardType='email-address'
-            value={usuarioFirebase.email}
-            editable={false}
+            label='Telefono'
+            keyboardType='default'
+            value={docUsuario.telefono}
+            onChangeText={(val) =>
+              setDocUsuario({
+                ...docUsuario,
+                ['telefono']: val,
+              })
+            }
           />
 
           <Button
-            title='Guardar cambios'
+            style={{ marginHorizontal: 60, width: 250 }}
+            mode='contained'
             onPress={async () => {
               setLoading(true);
 
-              /**
-               * Existen dos tipos de edicion de datos en
-               * FireStore
-               *
-               * 1.- update (constructivo)
-               *      Solo se editan los campos indicados
-               *      y los demás se respetan
-               * 2.- set (destructivo)
-               *      Solo se editan los campos indicados
-               *      y los demás se eliminan
-               */
               try {
                 //Seleccionamos de toda la coleccion
                 //solo el elemento del id de ese
@@ -311,6 +324,7 @@ const MisDatos = (props) => {
                     nombre: docUsuario.nombre,
                     apellido1: docUsuario.apellido1,
                     apellido2: docUsuario.apellido2,
+                    telefono: docUsuario.telefono,
                   });
                 setLoading(false);
                 setSnackUpdate(true);
@@ -319,7 +333,9 @@ const MisDatos = (props) => {
                 setSnackError(true);
               }
             }}
-          />
+          >
+            Guardar Cambios
+          </Button>
         </View>
       </ScrollView>
     </SafeAreaView>
