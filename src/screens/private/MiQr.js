@@ -13,7 +13,7 @@ const MiQr = (props) => (
     >
       <Card.Title
         title='Mi codigo QR'
-        subtitle='Muestra el codigo en cualquier plaza'
+        subtitle='Para acceder a cualquier plaza muestre este codigo.'
         left={LeftContent}
       />
       <Card.Cover

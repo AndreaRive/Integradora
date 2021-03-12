@@ -12,7 +12,7 @@ const Sidebar = (props) => {
       }}
     >
       <ImageBackground
-        source={require('./../../assets/images/fondosidebar.jpg')}
+        source={require('./../../assets/images/fondo.jpg')}
         style={{
           width: '100%',
           paddingBottom: 30,
@@ -25,11 +25,10 @@ const Sidebar = (props) => {
             textAlign: 'center',
             fontSize: 18,
             fontWeight: '500',
-            textDecorationLine: 'underline',
-            color: '#fff',
+            color: '#000',
           }}
         >
-          Hola de nuevo
+          B I E N V E N I D O
         </Text>
 
         <View style={{ flexDirection: 'row' }}>
@@ -40,14 +39,13 @@ const Sidebar = (props) => {
             }}
           >
             <ImageBackground
-              source={require('./../../assets/images/avatar.png')}
+              source={require('./../../assets/images/Logo.png')}
               style={{
                 width: 60,
                 height: 60,
                 overflow: 'hidden',
                 marginTop: 20,
-                borderRadius: 30,
-                backgroundColor: '#666',
+                backgroundColor: '#FFF',
               }}
             />
           </View>
@@ -64,10 +62,10 @@ const Sidebar = (props) => {
                 style={{
                   fontSize: 16,
                   marginBottom: 5,
-                  color: '#fff',
+                  color: '#000',
                 }}
               >
-                Raúl Zavaleta
+                CAMILO SILVA
               </Text>
             </View>
           </View>

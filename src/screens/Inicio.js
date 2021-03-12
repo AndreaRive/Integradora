@@ -116,7 +116,7 @@ const Inicio = (props) => {
 
                   <Button style={{ position: 'absolute', right: 0 }}>
                     Población:{item.item.poblacionActual}/
-                    {item.item.poblacionGeneral}
+                    {item.item.poblacionMaxima}
                   </Button>
                 </Card.Actions>
               </Card>
